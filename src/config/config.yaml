@@ -1,0 +1,133 @@
+# Wandb settings
+wandb:
+  use_sweep: false
+  project_name: "project_name"
+  entity: "your_username"
+  group: "experiment_group"
+  tags: ["dev", "experiment1"]
+
+# Data settings
+data:
+  train_dir: "path/to/train/data"
+  val_dir: "path/to/val/data"
+  test_dir: "path/to/test/data"
+  
+  dataset_params:
+    # Parameters passed to CustomDataset
+    input_size: [256, 256]
+    normalize: true
+    augmentations: true
+  
+  train_dataloader_params:
+    batch_size: 32
+    num_workers: 4
+    shuffle: true
+    pin_memory: true
+    drop_last: true
+  
+  val_dataloader_params:
+    batch_size: 32
+    num_workers: 4
+    shuffle: false
+    pin_memory: true
+
+# Model configurations
+models:
+  generator:
+    type: "generator"
+    params:
+      latent_dim: 128
+      output_shape: [3, 256, 256]
+      hidden_dims: [512, 256, 128, 64]
+      activation: "relu"
+      normalization: "batch"
+      dropout_rate: 0.1
+  
+  discriminator:
+    type: "discriminator"
+    params:
+      input_shape: [3, 256, 256]
+      hidden_dims: [64, 128, 256, 512]
+      activation: "leaky_relu"
+      normalization: "batch"
+      dropout_rate: 0.1
+
+# Training settings
+training:
+  # Basic training parameters
+  num_epochs: 100
+  seed: 42
+  mixed_precision: true
+  gradient_clip_val: 1.0
+  
+  # Checkpoint settings
+  checkpoint_dir: "checkpoints"
+  checkpoint_frequency: 5
+  resume_from: null  # Path to checkpoint if resuming
+  
+  # Logging settings
+  log_dir: "logs"
+  log_frequency: 100  # Steps between logging
+  
+  # Validation settings
+  val_frequency: 1  # Epochs between validation
+  early_stopping_patience: 10
+  
+  # Optimizer settings
+  optimizers:
+    generator:
+      type: "Adam"
+      params:
+        lr: 0.0002
+        betas: [0.5, 0.999]
+        weight_decay: 0.0001
+    
+    discriminator:
+      type: "Adam"
+      params:
+        lr: 0.0002
+        betas: [0.5, 0.999]
+        weight_decay: 0.0001
+  
+  # Learning rate scheduler settings
+  schedulers:
+    generator:
+      type: "CosineAnnealingLR"
+      params:
+        T_max: 100
+        eta_min: 0.00001
+    
+    discriminator:
+      type: "CosineAnnealingLR"
+      params:
+        T_max: 100
+        eta_min: 0.00001
+  
+  # Loss function settings
+  losses:
+    reconstruction:
+      type: "L1Loss"
+      weight: 1.0
+      params: {}
+    
+    adversarial:
+      type: "BCEWithLogitsLoss"
+      weight: 0.1
+      params: {}
+
+# Inference/testing settings
+inference:
+  batch_size: 32
+  save_dir: "results"
+  save_format: "png"
+  visualization_params:
+    num_samples: 16
+    figure_size: [16, 8]
+
+# System settings
+system:
+  precision: 32  # or 16 for mixed precision
+  accelerator: "gpu"  # or "cpu"
+  devices: [0]  # GPU indices to use
+  num_workers: 4
+  pin_memory: true 

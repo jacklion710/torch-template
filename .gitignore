@@ -1,0 +1,9 @@
+__pycache__/
+checkpoints/
+plots/
+audio/
+images/
+models/
+*.pdf
+data/
+.DS_Store
